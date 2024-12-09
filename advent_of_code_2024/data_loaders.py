@@ -1,8 +1,9 @@
 import pathlib
+from collections.abc import Sequence
 
 import pandas as pd
 
-from .data_structures import Report
+from .data_structures import Report, ReportWithDampener
 
 
 def read_csv(filename: str) -> pd.DataFrame:
@@ -10,11 +11,21 @@ def read_csv(filename: str) -> pd.DataFrame:
     return pd.read_csv(input_path, delimiter=";", header=None)
 
 
-def load_reports(filename: str) -> list[Report]:
+def load_reports(filename: str) -> Sequence[Report]:
     input_path = pathlib.Path("data") / filename
     with open(input_path) as f_input:
         data = [
             Report([int(x.strip()) for x in row.split(" ")])
+            for row in f_input.readlines()
+        ]
+    return data
+
+
+def load_reports_with_dampener(filename: str) -> Sequence[ReportWithDampener]:
+    input_path = pathlib.Path("data") / filename
+    with open(input_path) as f_input:
+        data = [
+            ReportWithDampener([int(x.strip()) for x in row.split(" ")])
             for row in f_input.readlines()
         ]
     return data
