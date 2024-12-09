@@ -1,6 +1,8 @@
-from .data_loaders import df_distance, read_csv
+from .data_loaders import read_csv
+from .metrics import distance_df, similarity_df
 
 __all__ = [
-    "df_distance",
+    "distance_df",
     "read_csv",
+    "similarity_df",
 ]

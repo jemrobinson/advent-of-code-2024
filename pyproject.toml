@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "data-safe-haven"
+name = "advent-of-code-2024"
 dynamic = ["version"]
 description = "An open-source framework for creating secure environments to analyse sensitive data."
 authors = [
