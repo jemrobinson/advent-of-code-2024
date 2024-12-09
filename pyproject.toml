@@ -1,0 +1,149 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "data-safe-haven"
+dynamic = ["version"]
+description = "An open-source framework for creating secure environments to analyse sensitive data."
+authors = [
+  { name = "Data Safe Haven development team", email = "safehavendevs@turing.ac.uk" },
+]
+readme = "README.md"
+requires-python = "==3.12.*"
+classifiers = [
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+]
+license = { file = "LICENSE" }
+dependencies = [
+]
+
+[project.urls]
+Issues = "https://github.com/alan-turing-institute/advent-of-code-2024/issues"
+Source = "https://github.com/alan-turing-institute/advent-of-code-2024"
+
+[project.optional-dependencies]
+lint = [
+  "black==24.10.0",
+  "mypy==1.13.0",
+  "pydantic==2.10.2",
+  "ruff==0.8.1",
+]
+test = [
+  "pytest==8.3.4",
+]
+
+[tool.black]
+target-version = ["py312"]
+
+[tool.coverage.paths]
+source = ["advent_of_code_2024/"]
+
+[tool.coverage.run]
+relative_files = true
+omit= [
+  "tests/*",
+]
+
+[tool.hatch.envs.lint]
+detached = true
+features = ["lint"]
+
+[tool.hatch.envs.lint.scripts]
+all = [
+  "fmt",
+  "style",
+  "typing",
+]
+fmt = [
+  "black {args:data_safe_haven tests}",
+  "ruff check --fix {args:data_safe_haven tests}",
+  "style",
+]
+style = [
+  "ruff check {args:data_safe_haven tests}",
+  "black --check --diff {args:data_safe_haven tests}",
+]
+typing = "mypy {args:data_safe_haven}"
+
+[tool.hatch.envs.test]
+features = ["test"]
+
+[tool.hatch.envs.test.scripts]
+test = "coverage run -m pytest {args:} ./tests"
+test-report = "coverage report {args:}"
+test-coverage = ["test", "test-report"]
+
+[tool.hatch.version]
+path = "advent_of_code_2024/version.py"
+
+[tool.mypy]
+disallow_subclassing_any = false  # allow subclassing of types from third-party libraries
+files = "advent_of_code_2024"     # run mypy over this directory
+mypy_path = "typings"             # use this directory for stubs
+plugins = ["pydantic.mypy"]       # enable the pydantic plugin
+strict = true                     # enable all optional error checking flags
+
+[tool.pytest.ini_options]
+addopts = [
+    "-vvv",
+    "--import-mode=importlib",
+    "--disable-warnings",
+    "--ignore=data_safe_haven/resources/*",
+]
+
+[tool.ruff.lint]
+select = [
+  # See https://beta.ruff.rs/docs/rules/
+  "A",   # flake8-builtins
+  "ARG", # flake8-unused-arguments
+  "B",   # flake8-bugbear
+  "C",   # complexity, mcabe and flake8-comprehensions
+  "DTZ", # flake8-datetimez
+  "E",   # pycodestyle errors
+  "EM",  # flake8-errmsg
+  "F",   # pyflakes
+  "FBT", # flake8-boolean-trap
+  "I",   # isort
+  "ICN", # flake8-import-conventions
+  "ISC", # flake8-implicit-str-concat
+  "N",   # pep8-naming
+  "PLC", # pylint convention
+  "PLE", # pylint error
+  "PLR", # pylint refactor
+  "PLW", # pylint warning
+  "Q",   # flake8-quotes
+  "RUF", # ruff rules
+  "S",   # flake8-bandits
+  "T",   # flake8-debugger and flake8-print
+  "TID", # flake8-tidy-imports
+  "UP",  # pyupgrade
+  "W",   # pycodestyle warnings
+  "YTT", # flake8-2020
+]
+ignore = [
+  "E501",     # ignore line length
+  "S106",     # ignore check for possible passwords
+  "S603",     # allow subprocess with shell=False, this is lower severity than those with shell=True
+  "C901",     # ignore complex-structure
+  "PLR0912",  # ignore too-many-branches
+  "PLR0913",  # ignore too-many-arguments
+  "PLR0915",  # ignore too-many-statements
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "parents"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["data_safe_haven"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore the following for tests only
+"tests/**/*" = [
+  "PLR2004",  # magic values
+  "S101",     # assertions
+  "TID252",   # relative imports
+]
