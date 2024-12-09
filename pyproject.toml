@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "data-safe-haven"
+name = "advent-of-code-2024"
 dynamic = ["version"]
 description = "An open-source framework for creating secure environments to analyse sensitive data."
 authors = [
@@ -18,6 +18,7 @@ classifiers = [
 ]
 license = { file = "LICENSE" }
 dependencies = [
+  "pandas==2.2.3",
 ]
 
 [project.urls]
@@ -32,6 +33,7 @@ lint = [
   "ruff==0.8.1",
 ]
 test = [
+  "coverage==7.6.9",
   "pytest==8.3.4",
 ]
 
@@ -58,23 +60,23 @@ all = [
   "typing",
 ]
 fmt = [
-  "black {args:data_safe_haven tests}",
-  "ruff check --fix {args:data_safe_haven tests}",
+  "black {args:advent_of_code_2024 tests}",
+  "ruff check --fix {args:advent_of_code_2024 tests}",
   "style",
 ]
 style = [
-  "ruff check {args:data_safe_haven tests}",
-  "black --check --diff {args:data_safe_haven tests}",
+  "ruff check {args:advent_of_code_2024 tests}",
+  "black --check --diff {args:advent_of_code_2024 tests}",
 ]
-typing = "mypy {args:data_safe_haven}"
+typing = "mypy {args:advent_of_code_2024}"
 
 [tool.hatch.envs.test]
 features = ["test"]
 
 [tool.hatch.envs.test.scripts]
-test = "coverage run -m pytest {args:} ./tests"
-test-report = "coverage report {args:}"
-test-coverage = ["test", "test-report"]
+test = "coverage run -m pytest {args:} ./tests/"
+report = "coverage report {args:}"
+all = ["test", "report"]
 
 [tool.hatch.version]
 path = "advent_of_code_2024/version.py"
@@ -91,7 +93,7 @@ addopts = [
     "-vvv",
     "--import-mode=importlib",
     "--disable-warnings",
-    "--ignore=data_safe_haven/resources/*",
+    "--ignore=advent_of_code_2024/resources/*",
 ]
 
 [tool.ruff.lint]
@@ -138,7 +140,7 @@ ban-relative-imports = "parents"
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-known-first-party = ["data_safe_haven"]
+known-first-party = ["advent_of_code_2024"]
 
 [tool.ruff.lint.per-file-ignores]
 # Ignore the following for tests only
