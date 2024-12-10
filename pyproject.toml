@@ -19,6 +19,7 @@ classifiers = [
 license = { file = "LICENSE" }
 dependencies = [
   "pandas==2.2.3",
+  "ply==3.11",
 ]
 
 [project.urls]
@@ -88,6 +89,12 @@ files = "advent_of_code_2024"     # run mypy over this directory
 mypy_path = "typings"             # use this directory for stubs
 plugins = ["pydantic.mypy"]       # enable the pydantic plugin
 strict = true                     # enable all optional error checking flags
+
+[[tool.mypy.overrides]]
+module = [
+    "ply.*",
+]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = [
