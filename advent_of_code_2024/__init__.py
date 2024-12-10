@@ -2,11 +2,13 @@ from .data_loaders import (
     load_memory_string,
     load_reports,
     load_reports_with_dampener,
-    parse_memory_string,
+    load_wordsearch_array,
+    load_wordsearch_simple,
     read_csv,
 )
 from .metrics import distance_df, similarity_df
 from .parser import MemoryParser
+from .utility import parse_memory_string
 
 __all__ = [
     "MemoryParser",
@@ -14,6 +16,8 @@ __all__ = [
     "load_memory_string",
     "load_reports",
     "load_reports_with_dampener",
+    "load_wordsearch_array",
+    "load_wordsearch_simple",
     "parse_memory_string",
     "read_csv",
     "similarity_df",
