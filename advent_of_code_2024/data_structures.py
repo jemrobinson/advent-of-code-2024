@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 from .utility import count
@@ -31,7 +32,7 @@ class ReportWithDampener(pd.Series):  # type: ignore[type-arg]
         return False
 
 
-class WordSearch:
+class WordSearchSimple:
     def __init__(self, rows: Sequence[str]):
         size = len(rows)
         self.rows = [row.strip() for row in rows]
@@ -77,3 +78,23 @@ class WordSearch:
             + diags_swne
             + diags_swne_r
         )
+
+
+class WordSearch:
+    def __init__(self, lines: Sequence[str]) -> None:
+        self.array = np.array([list(line.strip()) for line in lines])
+
+    def search_xmas(self) -> int:
+        total = 0
+        for idx_x in range(1, self.array.shape[0] - 1):
+            for idx_y in range(1, self.array.shape[1] - 1):
+                if self.array[idx_y, idx_x] == "A":
+                    nw = self.array[idx_y - 1, idx_x - 1]
+                    ne = self.array[idx_y - 1, idx_x + 1]
+                    se = self.array[idx_y + 1, idx_x + 1]
+                    sw = self.array[idx_y + 1, idx_x - 1]
+                    nwse = (nw == "S" and se == "M") or (nw == "M" and se == "S")
+                    swne = (sw == "S" and ne == "M") or (sw == "M" and ne == "S")
+                    if nwse and swne:
+                        total += 1
+        return total

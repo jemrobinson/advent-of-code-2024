@@ -3,7 +3,7 @@ from collections.abc import Sequence
 
 import pandas as pd
 
-from .data_structures import Report, ReportWithDampener, WordSearch
+from .data_structures import Report, ReportWithDampener, WordSearch, WordSearchSimple
 
 
 def read_csv(filename: str) -> pd.DataFrame:
@@ -38,8 +38,15 @@ def load_memory_string(filename: str) -> str:
     return data
 
 
-def load_wordsearch(filename: str) -> WordSearch:
+def load_wordsearch_simple(filename: str) -> WordSearchSimple:
     input_path = pathlib.Path("data") / filename
     with open(input_path) as f_input:
-        data = WordSearch(f_input.readlines())
+        data = WordSearchSimple(f_input.readlines())
     return data
+
+
+def load_wordsearch_array(filename: str) -> WordSearch:
+    input_path = pathlib.Path("data") / filename
+    with open(input_path) as f_input:
+        lines = f_input.readlines()
+    return WordSearch(lines)

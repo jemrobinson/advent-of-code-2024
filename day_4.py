@@ -1,13 +1,14 @@
 #! /usr/bin/env python
-from advent_of_code_2024 import load_wordsearch
+from advent_of_code_2024 import load_wordsearch_array, load_wordsearch_simple
 
 
 def part_one():
-    data = load_wordsearch("day-4.txt")
+    data = load_wordsearch_simple("day-4.txt")
     print(data.search("XMAS"))
 
 def part_two():
-    pass
+    data = load_wordsearch_array("day-4.txt")
+    print(data.search_xmas())
 
 
 if __name__ == "__main__":
