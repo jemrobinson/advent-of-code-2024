@@ -10,4 +10,8 @@ def test_part_one():
 
 
 def test_part_two():
-    pass
+    antennae = load_antenna_sets("day-8.test.txt")
+    antinodes = reduce(
+        set.union, [a.antinodes(first_harmonic=0, last_harmonic=999) for a in antennae]
+    )
+    assert (len(antinodes)) == 34

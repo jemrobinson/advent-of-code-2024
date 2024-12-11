@@ -10,7 +10,11 @@ def part_one():
     print("Day 8 part 1:", len(antinodes))
 
 def part_two():
-    print("Day 8 part 2:")
+    antennae = load_antenna_sets("day-8.txt")
+    antinodes = reduce(
+        set.union, [a.antinodes(first_harmonic=0, last_harmonic=999) for a in antennae]
+    )
+    print("Day 8 part 2:", len(antinodes))
 
 
 if __name__ == "__main__":
