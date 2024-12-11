@@ -1,6 +1,8 @@
 import pathlib
 from collections.abc import Sequence
 
+import numpy as np
+import numpy.typing as npt
 import pandas as pd
 
 from .report import Report, ReportWithDampener
@@ -9,6 +11,11 @@ from .report import Report, ReportWithDampener
 def load_csv_as_df(filename: str, delimiter: str = ";") -> pd.DataFrame:
     input_path = pathlib.Path("data") / filename
     return pd.read_csv(input_path, delimiter=delimiter, header=None)
+
+
+def load_file_as_array(filename: str) -> npt.NDArray[np.str_]:
+    lines = load_file_as_lines(filename)
+    return np.array([list(line.strip()) for line in lines])
 
 
 def load_file_as_lines(filename: str) -> list[str]:
