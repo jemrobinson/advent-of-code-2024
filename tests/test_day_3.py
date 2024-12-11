@@ -1,4 +1,5 @@
-from advent_of_code_2024 import MemoryParser, load_memory_string, parse_memory_string
+from advent_of_code_2024.data_loaders import load_memory_string
+from advent_of_code_2024.parser import MemoryParser, parse_memory_string
 
 
 def test_part_one():

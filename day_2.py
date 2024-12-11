@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from advent_of_code_2024 import load_reports, load_reports_with_dampener
+from advent_of_code_2024.data_loaders import load_reports, load_reports_with_dampener
 
 def part_one():
     reports = load_reports("day-2.csv")
