@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from advent_of_code_2024 import load_wordsearch_array, load_wordsearch_simple
+from advent_of_code_2024.data_loaders import load_wordsearch_array, load_wordsearch_simple
 
 
 def part_one():

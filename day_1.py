@@ -1,5 +1,6 @@
 #! /usr/bin/env python
-from advent_of_code_2024 import distance_df, read_csv, similarity_df
+from advent_of_code_2024.data_loaders import read_csv
+from advent_of_code_2024.metrics import distance_df, similarity_df
 
 def part_one():
     df = read_csv("day-1.csv")

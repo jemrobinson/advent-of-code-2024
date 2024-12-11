@@ -11,6 +11,23 @@ def read_csv(filename: str) -> pd.DataFrame:
     return pd.read_csv(input_path, delimiter=";", header=None)
 
 
+def load_print_queue_rules(filename: str) -> Sequence[tuple[int, int]]:
+    input_path = pathlib.Path("data") / filename
+    return [
+        (int(row[0]), int(row[1]))
+        for _, row in pd.read_csv(input_path, delimiter="|", header=None).iterrows()
+    ]
+
+
+def load_print_queue_updates(filename: str) -> Sequence[Sequence[int]]:
+    input_path = pathlib.Path("data") / filename
+    updates = []
+    with open(input_path) as f_input:
+        for line in f_input.readlines():
+            updates.append(list(map(int, line.split(","))))
+    return updates
+
+
 def load_reports(filename: str) -> Sequence[Report]:
     input_path = pathlib.Path("data") / filename
     with open(input_path) as f_input:

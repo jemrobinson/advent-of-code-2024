@@ -1,8 +1,17 @@
 import logging
-from collections.abc import Generator
+import re
+from collections.abc import Generator, Sequence
 from typing import Any, ClassVar
 
 from ply import lex, yacc
+
+from .utility import as_int
+
+
+def parse_memory_string(data: str) -> Sequence[tuple[int, int]]:
+    matches: list[str] = re.findall(r"mul\(\d+,\d+\)", data)
+    values = [[as_int(num) for num in match.split(",")] for match in matches]
+    return [(value[0], value[1]) for value in values]
 
 
 class MemoryLexer:

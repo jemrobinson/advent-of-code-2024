@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 import logging
 
-from advent_of_code_2024 import load_memory_string, MemoryParser, parse_memory_string
+from advent_of_code_2024.data_loaders import load_memory_string
+from advent_of_code_2024.parser import MemoryParser, parse_memory_string
 
 def part_one():
     memory = load_memory_string("day-3.txt")
@@ -16,6 +17,6 @@ def part_two():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format=r"[%(levelname)8s] %(message)s")
     part_one()
     part_two()
