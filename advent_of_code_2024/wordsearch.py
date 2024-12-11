@@ -1,42 +1,15 @@
-from collections.abc import Sequence
-from typing import Any
-
 import numpy as np
-import pandas as pd
 
+from .data_loaders import load_file_as_lines
 from .utility import count
 
 
-class Report(pd.Series):  # type: ignore[type-arg]
-    def __init__(self, *args: Any, **kwargs: Any):
-        super().__init__(*args, **kwargs)
-        self.threshold: int = 3
-
-    def is_safe(self) -> bool:
-        diffs: pd.Series[int] = self.diff()[1:]  # type: ignore[assignment]
-        all_inc = diffs[diffs > 0].shape == diffs.shape
-        all_dec = diffs[diffs < 0].shape == diffs.shape
-        if not (all_inc or all_dec):
-            return False
-        if any(diffs.abs() > self.threshold):
-            return False
-        return True
-
-
-class ReportWithDampener(pd.Series):  # type: ignore[type-arg]
-    def is_safe(self) -> bool:
-        for idx in range(self.size):
-            subseries = self.drop(idx)
-            if Report(subseries).is_safe():
-                return True
-        return False
-
-
 class WordSearchSimple:
-    def __init__(self, rows: Sequence[str]):
-        size = len(rows)
-        self.rows = [row.strip() for row in rows]
-        self.columns = ["".join([row[idx] for row in rows]) for idx in range(len(rows))]
+    def __init__(self, filename: str):
+        lines = load_file_as_lines(filename)
+        size = len(lines)
+        self.rows = [line.strip() for line in lines]
+        self.columns = ["".join([line[idx] for line in lines]) for idx in range(size)]
         self.diags_nwse = []
         self.diags_swne = []
         for idx_col in range(size):
@@ -81,7 +54,8 @@ class WordSearchSimple:
 
 
 class WordSearch:
-    def __init__(self, lines: Sequence[str]) -> None:
+    def __init__(self, filename: str) -> None:
+        lines = load_file_as_lines(filename)
         self.array = np.array([list(line.strip()) for line in lines])
 
     def search_xmas(self) -> int:
