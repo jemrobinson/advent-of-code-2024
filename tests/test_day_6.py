@@ -7,4 +7,5 @@ def test_part_one():
 
 
 def test_part_two():
-    pass
+    maze = Maze("day-6.test.txt")
+    assert maze.count_loops() == 6

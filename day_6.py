@@ -8,7 +8,8 @@ def part_one():
 
 
 def part_two():
-    pass
+    maze = Maze("day-6.txt")
+    print("Day 6 part 2:",  maze.count_loops())
 
 
 if __name__ == "__main__":
