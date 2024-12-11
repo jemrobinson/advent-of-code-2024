@@ -1,6 +1,4 @@
-import numpy as np
-
-from .data_loaders import load_file_as_lines
+from .data_loaders import load_file_as_array, load_file_as_lines
 from .utility import count
 
 
@@ -55,8 +53,7 @@ class WordSearchSimple:
 
 class WordSearch:
     def __init__(self, filename: str) -> None:
-        lines = load_file_as_lines(filename)
-        self.array = np.array([list(line.strip()) for line in lines])
+        self.array = load_file_as_array(filename)
 
     def search_xmas(self) -> int:
         total = 0
