@@ -33,6 +33,9 @@ class GridLocation:
     def __sub__(self, other: "GridLocation") -> "GridLocation":
         return GridLocation([self.pos_0 - other.pos_0, self.pos_1 - other.pos_1])
 
+    def adjacent(self, other: "GridLocation") -> bool:
+        return abs(self.pos_0 - other.pos_0) + abs(self.pos_1 - other.pos_1) == 1
+
     def as_tuple(self) -> tuple[int, int]:
         return (self.pos_0, self.pos_1)
 
