@@ -5,7 +5,8 @@ def part_one():
     print("Day 11 part 1:", stone_line.score(25))
 
 def part_two():
-    pass
+    stone_line = StoneLine("day-11.txt")
+    print("Day 11 part 2:", stone_line.score(75))
 
 
 if __name__ == "__main__":
