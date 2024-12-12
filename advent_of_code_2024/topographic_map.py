@@ -23,19 +23,33 @@ class TopographicMap:
             if self.array[position] == 0
         ]
 
+    def rate_trailhead(self, trailhead: GridLocation) -> int:
+        """Get the rating for a trailhead"""
+        return len(self.unique_routes_summits(trailhead))
+
+    def rating(self) -> int:
+        """Get the total rating"""
+        return sum(
+            [self.rate_trailhead(trailhead) for trailhead in self.find_trailheads()]
+        )
+
     def score_trailhead(self, trailhead: GridLocation) -> int:
         """Get the score for a trailhead"""
-        positions = [trailhead]
-        while self.value(positions[0]) < self.max_height:
-            valid_moves = [self.valid_moves(position) for position in positions]
-            positions = reduce(iadd, valid_moves, [])
-        return len(set(positions))
+        return len(set(self.unique_routes_summits(trailhead)))
 
     def score(self) -> int:
         """Get the total score"""
         return sum(
             [self.score_trailhead(trailhead) for trailhead in self.find_trailheads()]
         )
+
+    def unique_routes_summits(self, trailhead: GridLocation) -> list[GridLocation]:
+        """Get the full list of summits at the end of a unique route"""
+        positions = [trailhead]
+        while self.value(positions[0]) < self.max_height:
+            valid_moves = [self.valid_moves(position) for position in positions]
+            positions = reduce(iadd, valid_moves, [])
+        return positions
 
     def value(self, position: GridLocation) -> int:
         """Get the height of a location"""

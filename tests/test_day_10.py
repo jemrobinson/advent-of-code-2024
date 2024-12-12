@@ -7,4 +7,5 @@ def test_part_one():
 
 
 def test_part_two():
-    pass
+    topo_map = TopographicMap("day-10.test.txt")
+    assert topo_map.rating() == 81

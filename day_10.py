@@ -5,7 +5,8 @@ def part_one():
     print("Day 10 part 1:", topo_map.score())
 
 def part_two():
-    pass
+    topo_map = TopographicMap("day-10.txt")
+    print("Day 10 part 2:", topo_map.rating())
 
 
 if __name__ == "__main__":
