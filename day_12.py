@@ -6,7 +6,8 @@ def part_one():
     print("Day 12 part 1:", plot.price())
 
 def part_two():
-    pass
+    plot_2 = GardenPlot("day-12.txt")
+    print("Day 12 part 2:", plot_2.price_discounted())
 
 
 if __name__ == "__main__":
