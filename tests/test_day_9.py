@@ -7,4 +7,5 @@ def test_part_one():
 
 
 def test_part_two():
-    pass
+    file_system = FileSystem("day-9.test.txt")
+    assert file_system.checksum(strategy="conservative") == 2858
