@@ -41,3 +41,27 @@ class GridLocation:
 
     def in_bounds(self, max_0: int, max_1: int) -> bool:
         return (0 <= self.pos_0 <= max_0) and (0 <= self.pos_1 <= max_1)
+
+    def north(self) -> "GridLocation":
+        return self + GridLocation((-1, 0))
+
+    def northeast(self) -> "GridLocation":
+        return self + GridLocation((-1, 1))
+
+    def east(self) -> "GridLocation":
+        return self + GridLocation((0, 1))
+
+    def southeast(self) -> "GridLocation":
+        return self + GridLocation((1, 1))
+
+    def south(self) -> "GridLocation":
+        return self + GridLocation((1, 0))
+
+    def southwest(self) -> "GridLocation":
+        return self + GridLocation((1, -1))
+
+    def west(self) -> "GridLocation":
+        return self + GridLocation((0, -1))
+
+    def northwest(self) -> "GridLocation":
+        return self + GridLocation((-1, -1))
