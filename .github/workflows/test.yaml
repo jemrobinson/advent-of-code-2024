@@ -1,0 +1,31 @@
+---
+name: Test code
+
+# Run workflow on pushes to matching branches
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install hatch
+        run: pip install hatch
+
+      - name: Print package versions
+        run: |
+          hatch run test:pytest --version
+          hatch run test:coverage --version
+
+      - name: Lint Python
+        run: hatch run test:all
