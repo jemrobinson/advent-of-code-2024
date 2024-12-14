@@ -39,46 +39,45 @@ class Region:
     @property
     def sides(self) -> int:
         """We count the number of corners, which is equivalent to the number of sides"""
-        n_corners = 0
-        for location_0 in self.locations:
-            # Check for neighbours in all compass directions
-            has_north = location_0.north() in self.locations
-            has_northeast = location_0.northeast() in self.locations
-            has_east = location_0.east() in self.locations
-            has_southeast = location_0.southeast() in self.locations
-            has_south = location_0.south() in self.locations
-            has_southwest = location_0.southwest() in self.locations
-            has_west = location_0.west() in self.locations
-            has_northwest = location_0.northwest() in self.locations
-            # Number of direct neighbours
-            n_neighbours = sum([has_north, has_east, has_south, has_west])
-            n_filled_diagonals = (
-                (has_north and has_east and has_northeast)
-                + (has_south and has_east and has_southeast)
-                + (has_south and has_west and has_southwest)
-                + (has_north and has_west and has_northwest)
-            )
-            # No neighbours
-            if n_neighbours == 0:
-                n_corners += 4
-            # One neighbour
-            if n_neighbours == 1:
-                n_corners += 2
-            # Two neighbours
-            if n_neighbours == 2:  # noqa: PLR2004
-                # ... in a straight line
-                if (has_north and has_south) or (has_east and has_west):
-                    n_corners += 0
-                # ... in an L-shape: we need to check the inside diagonal
-                else:
-                    n_corners += 2 - n_filled_diagonals
-            # Three neighbours in a T-shape: we need to check the inside diagonals
-            if n_neighbours == 3:  # noqa: PLR2004
-                n_corners += 2 - n_filled_diagonals
-            # Four neighbours in a +: we need to check the inside diagonals
-            if n_neighbours == 4:  # noqa: PLR2004
-                n_corners += 4 - n_filled_diagonals
-        return n_corners
+        return sum(self.corners(location) for location in self.locations)
+
+    def corners(self, location: GridLocation) -> int:
+        # Check for neighbours in all compass directions
+        has_north = location.north() in self.locations
+        has_northeast = location.northeast() in self.locations
+        has_east = location.east() in self.locations
+        has_southeast = location.southeast() in self.locations
+        has_south = location.south() in self.locations
+        has_southwest = location.southwest() in self.locations
+        has_west = location.west() in self.locations
+        has_northwest = location.northwest() in self.locations
+        # Number of direct neighbours
+        n_neighbours = sum([has_north, has_east, has_south, has_west])
+        n_filled_diagonals = (
+            (has_north and has_east and has_northeast)
+            + (has_south and has_east and has_southeast)
+            + (has_south and has_west and has_southwest)
+            + (has_north and has_west and has_northwest)
+        )
+        # No neighbours
+        if n_neighbours == 0:
+            return 4
+        # One neighbour
+        if n_neighbours == 1:
+            return 2
+        # Two neighbours
+        if n_neighbours == 2:  # noqa: PLR2004
+            # ... in a straight line
+            if (has_north and has_south) or (has_east and has_west):
+                return 0
+            # ... in an L-shape: we need to check the inside diagonal
+            else:
+                return 2 - n_filled_diagonals
+        # Three neighbours in a T-shape: we need to check the inside diagonals
+        if n_neighbours == 3:  # noqa: PLR2004
+            return 2 - n_filled_diagonals
+        # Four neighbours in a +: we need to check the inside diagonals
+        return 4 - n_filled_diagonals
 
 
 class GardenPlot:
