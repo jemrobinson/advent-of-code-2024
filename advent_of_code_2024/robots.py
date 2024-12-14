@@ -116,12 +116,6 @@ class RobotGrid:
             # Take a step
             self.wait(1)
             idx_step += 1
-            adjacency = sum(
-                [
-                    robot_0.position.adjacent(robot_1.position)
-                    for robot_0, robot_1 in combinations(self.robots, 2)
-                ]
-            )
 
     def christmas_tree_non_adjacency(self, threshold: int) -> int:
         idx_step = 0
