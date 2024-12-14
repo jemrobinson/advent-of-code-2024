@@ -9,7 +9,8 @@ def part_one():
     print("Day 14 part 1:", grid.safety_factor(100))
 
 def part_two():
-    pass
+    grid = RobotGrid("day-14.txt", width=101, height=103)
+    print("Day 14 part 2:", grid.christmas_tree())
 
 if __name__ == "__main__":
     part_one()
