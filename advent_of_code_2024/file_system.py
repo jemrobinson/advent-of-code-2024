@@ -1,6 +1,6 @@
 from itertools import groupby
 
-from .data_loaders import load_file_as_string
+from advent_of_code_2024.data_loaders import load_file_as_string
 
 
 class Block:

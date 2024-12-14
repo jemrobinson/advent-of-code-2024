@@ -1,4 +1,4 @@
-from advent_of_code_2024.data_loaders import load_reports, load_reports_with_dampener
+from advent_of_code_2024.report import load_reports, load_reports_with_dampener
 
 
 def test_part_one():

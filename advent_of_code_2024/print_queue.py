@@ -2,6 +2,8 @@ from collections.abc import Sequence
 from contextlib import suppress
 from functools import cmp_to_key
 
+from advent_of_code_2024.data_loaders import load_csv_as_df, load_file_as_lines
+
 
 def evaluate_update(update: Sequence[int], rules: Sequence[tuple[int, int]]) -> bool:
     return all(evaluate_rule(update, rule) for rule in rules)
@@ -33,3 +35,14 @@ def sort_update(update: Sequence[int], rules: Sequence[tuple[int, int]]) -> list
         return 0
 
     return sorted(update, key=cmp_to_key(comparator))
+
+
+def load_print_queue_rules(filename: str) -> Sequence[tuple[int, int]]:
+    return [
+        (int(row[0]), int(row[1]))
+        for _, row in load_csv_as_df(filename, delimiter="|").iterrows()
+    ]
+
+
+def load_print_queue_updates(filename: str) -> Sequence[Sequence[int]]:
+    return [list(map(int, line.split(","))) for line in load_file_as_lines(filename)]

@@ -1,8 +1,10 @@
-from advent_of_code_2024.data_loaders import (
+from advent_of_code_2024.print_queue import (
+    evaluate_update,
     load_print_queue_rules,
     load_print_queue_updates,
+    middle_page,
+    sort_update,
 )
-from advent_of_code_2024.print_queue import evaluate_update, middle_page, sort_update
 
 
 def test_part_one():

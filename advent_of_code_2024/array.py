@@ -2,7 +2,7 @@ from collections.abc import Generator
 
 import numpy as np
 
-from .grid_location import GridLocation
+from advent_of_code_2024.grid_location import GridLocation
 
 
 class Array2D:

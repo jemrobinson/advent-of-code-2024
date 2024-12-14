@@ -3,7 +3,7 @@ import enum
 
 import numpy as np
 
-from .data_loaders import load_file_as_array
+from advent_of_code_2024.data_loaders import load_file_as_array
 
 Position = tuple[int, int]
 
