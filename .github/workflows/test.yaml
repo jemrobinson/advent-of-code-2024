@@ -27,5 +27,5 @@ jobs:
           hatch run test:pytest --version
           hatch run test:coverage --version
 
-      - name: Lint Python
+      - name: Test Python
         run: hatch run test:all

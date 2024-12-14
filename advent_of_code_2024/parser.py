@@ -5,7 +5,7 @@ from typing import Any, ClassVar
 
 from ply import lex, yacc
 
-from .utility import as_int
+from advent_of_code_2024.utility import as_int
 
 
 def parse_memory_string(data: str) -> Sequence[tuple[int, int]]:

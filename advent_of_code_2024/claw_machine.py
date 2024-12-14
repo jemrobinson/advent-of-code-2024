@@ -3,8 +3,8 @@ from itertools import batched
 
 import numpy as np
 
-from .data_loaders import load_file_as_lines
-from .grid_location import GridLocation
+from advent_of_code_2024.data_loaders import load_file_as_lines
+from advent_of_code_2024.grid_location import GridLocation
 
 
 class ClawMachine:

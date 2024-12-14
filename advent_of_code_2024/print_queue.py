@@ -2,34 +2,71 @@ from collections.abc import Sequence
 from contextlib import suppress
 from functools import cmp_to_key
 
+import pandas as pd
 
-def evaluate_update(update: Sequence[int], rules: Sequence[tuple[int, int]]) -> bool:
-    return all(evaluate_rule(update, rule) for rule in rules)
-
-
-def evaluate_rule(update: Sequence[int], rule: tuple[int, int]) -> bool:
-    with suppress(ValueError):
-        idx_first = update.index(rule[0])
-        idx_second = update.index(rule[1])
-        if idx_second < idx_first:
-            return False
-    return True
+from advent_of_code_2024.data_loaders import load_csv_as_df, load_file_as_lines
 
 
-def middle_page(update: Sequence[int]) -> int:
-    if len(update) % 2 == 0:
-        msg = f"No middle page for update of length {len(update)}"
-        raise ValueError(msg)
-    return update[len(update) // 2]
+class OrderingRule:
+    def __init__(self, rule: pd.Series) -> None:  # type: ignore[type-arg]
+        self.first = int(rule[0])
+        self.second = int(rule[1])
 
 
-def sort_update(update: Sequence[int], rules: Sequence[tuple[int, int]]) -> list[int]:
-    def comparator(x: int, y: int) -> int:
-        for rule in rules:
-            if rule[0] == x and rule[1] == y:
-                return -1
-            if rule[0] == y and rule[1] == x:
-                return 1
-        return 0
+class PageList:
+    def __init__(self, line: str) -> None:
+        self.page_list = list(map(int, line.split(",")))
 
-    return sorted(update, key=cmp_to_key(comparator))
+    def apply(self, rules: Sequence[OrderingRule]) -> "PageList":
+        def comparator(x: int, y: int) -> int:
+            for rule in rules:
+                if rule.first == x and rule.second == y:
+                    return -1
+                if rule.first == y and rule.second == x:
+                    return 1
+            return 0
+
+        self.page_list.sort(key=cmp_to_key(comparator))
+        return self
+
+    def evaluate_rule(self, rule: OrderingRule) -> bool:
+        with suppress(ValueError):
+            idx_first = self.page_list.index(rule.first)
+            idx_second = self.page_list.index(rule.second)
+            if idx_second < idx_first:
+                return False
+        return True
+
+    def is_ordered(self, rules: Sequence[OrderingRule]) -> bool:
+        return all(self.evaluate_rule(rule) for rule in rules)
+
+    def middle_page(self) -> int:
+        if len(self.page_list) % 2 == 0:
+            msg = f"No middle page for update of length {len(self.page_list)}"
+            raise ValueError(msg)
+        return self.page_list[len(self.page_list) // 2]
+
+
+class PrintQueue:
+    def __init__(self, rules_file: str, updates_file: str) -> None:
+        self.rules = [
+            OrderingRule(row)
+            for _, row in load_csv_as_df(rules_file, delimiter="|").iterrows()
+        ]
+        self.updates = [PageList(line) for line in load_file_as_lines(updates_file)]
+
+    def score_ordered_updates(self) -> int:
+        return sum(
+            [
+                update.middle_page()
+                for update in self.updates
+                if update.is_ordered(self.rules)
+            ]
+        )
+
+    def score_unordered_updates(self) -> int:
+        return sum(
+            update.apply(self.rules).middle_page()
+            for update in self.updates
+            if not update.is_ordered(self.rules)
+        )

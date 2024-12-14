@@ -3,8 +3,8 @@ from operator import iadd
 
 import numpy as np
 
-from .data_loaders import load_file_as_array
-from .grid_location import GridLocation
+from advent_of_code_2024.data_loaders import load_file_as_array
+from advent_of_code_2024.grid_location import GridLocation
 
 
 class TopographicMap:

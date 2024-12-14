@@ -1,6 +1,9 @@
+from collections.abc import Sequence
 from typing import Any
 
 import pandas as pd
+
+from advent_of_code_2024.data_loaders import load_file_as_lines
 
 
 class Report(pd.Series):  # type: ignore[type-arg]
@@ -26,3 +29,17 @@ class ReportWithDampener(pd.Series):  # type: ignore[type-arg]
             if Report(subseries).is_safe():
                 return True
         return False
+
+
+def load_reports(filename: str) -> Sequence[Report]:
+    return [
+        Report([int(x.strip()) for x in line.split(" ")])
+        for line in load_file_as_lines(filename)
+    ]
+
+
+def load_reports_with_dampener(filename: str) -> Sequence[ReportWithDampener]:
+    return [
+        ReportWithDampener([int(x.strip()) for x in line.split(" ")])
+        for line in load_file_as_lines(filename)
+    ]
