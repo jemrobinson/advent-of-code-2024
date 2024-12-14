@@ -1,6 +1,9 @@
 import re
 from functools import reduce
+from itertools import combinations
 from operator import mul
+
+import numpy as np
 
 from advent_of_code_2024.data_loaders import load_file_as_lines
 from advent_of_code_2024.grid_location import GridLocation
@@ -86,6 +89,53 @@ class RobotGrid:
 
             # Draw the positions if we got a match
             if draw:
+                with open(f"trees/robots_{idx_step}.txt", "w") as f_out:
+                    f_out.writelines(self.draw_positions())
+                return idx_step
+
+            # Take a step
+            self.wait(1)
+            idx_step += 1
+
+    def christmas_tree_adjacency(self, threshold: int) -> int:
+        idx_step = 0
+        while True:
+            adjacency = sum(
+                [
+                    robot_0.position.adjacent(robot_1.position)
+                    for robot_0, robot_1 in combinations(self.robots, 2)
+                ]
+            )
+
+            # If the number of adjacent robots is above threshold then stop
+            if adjacency > threshold:
+                with open(f"trees/robots_{idx_step}.txt", "w") as f_out:
+                    f_out.writelines(self.draw_positions())
+                return idx_step
+
+            # Take a step
+            self.wait(1)
+            idx_step += 1
+            adjacency = sum(
+                [
+                    robot_0.position.adjacent(robot_1.position)
+                    for robot_0, robot_1 in combinations(self.robots, 2)
+                ]
+            )
+
+    def christmas_tree_non_adjacency(self, threshold: int) -> int:
+        idx_step = 0
+        while True:
+            # Use np.diff to count how many robots have no other to their east or south
+            array = np.zeros((self.width, self.height))
+            for robot in self.robots:
+                array[robot.position.as_tuple()] = 1
+            non_adjacency = sum(
+                np.sum(np.abs(np.diff(array, axis=idx_axis))) for idx_axis in range(2)
+            )
+
+            # If the number of non-adjacent robots is below threshold then stop
+            if non_adjacency < threshold:
                 with open(f"trees/robots_{idx_step}.txt", "w") as f_out:
                     f_out.writelines(self.draw_positions())
                 return idx_step

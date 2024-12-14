@@ -164,6 +164,7 @@ cython_debug/
 
 # Data
 data/*
+trees/*
 
 # MacOS
 **/.DS_Store
