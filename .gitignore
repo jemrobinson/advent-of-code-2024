@@ -164,6 +164,7 @@ cython_debug/
 
 # Data
 data/*
+!data/*test*
 trees/*
 
 # MacOS
