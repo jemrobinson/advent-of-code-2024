@@ -1,6 +1,6 @@
 import time
 
-from advent_of_code_2024.warehouse import Warehouse
+from advent_of_code_2024.warehouse import LargeWarehouse, Warehouse
 
 
 def part_one():
@@ -9,7 +9,9 @@ def part_one():
     print("Day 15 part 1:", warehouse.score_gps(), f"in {time.monotonic() - start:.3f} seconds")
 
 def part_two():
-    pass
+    start = time.monotonic()
+    warehouse = LargeWarehouse("day-15-moves.txt", "day-15-warehouse.txt")
+    print("Day 15 part 2:", warehouse.score_gps(), f"in {time.monotonic() - start:.3f} seconds")
 
 if __name__ == "__main__":
     part_one()
