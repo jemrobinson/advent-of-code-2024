@@ -2,6 +2,14 @@ from collections.abc import Sequence
 
 
 class GridLocation:
+    """Location in a rectangular grid.
+
+    Co-ordinates:
+    - (0,0) in the north-west corner.
+    - Increasing pos_0 moves south
+    - Increasing pos_1 moves east
+    """
+
     def __init__(self, location: Sequence[int]) -> None:
         self.pos_0 = int(location[0])
         self.pos_1 = int(location[1])
