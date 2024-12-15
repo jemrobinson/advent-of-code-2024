@@ -29,13 +29,6 @@ class Warehouse:
             return position.west()
         raise ValueError
 
-    def score_gps(self) -> int:
-        self.apply_moves()
-        return sum(self.score_location(loc) for loc in self.array.find("O"))
-
-    def score_location(self, position: GridLocation) -> int:
-        return 100 * position.pos_0 + position.pos_1
-
     def apply_moves(self) -> None:
         for move in self.robot_moves:
             next_robot_pos = self.move(self.robot_position, move)
@@ -69,6 +62,13 @@ class Warehouse:
                         self.array.set(next_robot_pos, "@")
                         self.array.set(next_check_pos, "O")
                         self.robot_position = next_robot_pos
+
+    def score_gps(self) -> int:
+        self.apply_moves()
+        return sum(self.score_location(loc) for loc in self.array.find("O"))
+
+    def score_location(self, position: GridLocation) -> int:
+        return 100 * position.pos_0 + position.pos_1
 
 
 class LargeBox:
@@ -250,8 +250,9 @@ class LargeBox:
         return output_grid
 
 
-class LargeWarehouse:
+class LargeWarehouse(Warehouse):
     def __init__(self, moves_file: str, warehouse_file: str) -> None:
+        super().__init__(moves_file, warehouse_file)
         self.array = StrArray2D(
             np.array(
                 [
@@ -266,20 +267,7 @@ class LargeWarehouse:
                 ]
             )
         )
-        self.robot_moves = load_file_as_string(moves_file)
         self.robot_position = self.array.find("@")[0]
-
-    @staticmethod
-    def move(position: GridLocation, direction: str) -> GridLocation:
-        if direction == "^":
-            return position.north()
-        if direction == ">":
-            return position.east()
-        if direction == "v":
-            return position.south()
-        if direction == "<":
-            return position.west()
-        raise ValueError
 
     def apply_moves(self) -> None:
         for move in self.robot_moves:
@@ -301,8 +289,6 @@ class LargeWarehouse:
                     box = LargeBox(lhs=next_robot_pos)
                     if box.is_moveable(move, self.array):
                         self.array = box.move_recursive(move, grid=self.array)
-                        if move in ("^", "v"):
-                            self.array.set(box.rhs, ".")
                         self.array.set(self.robot_position, ".")
                         self.array.set(next_robot_pos, "@")
                         self.robot_position = next_robot_pos
@@ -311,8 +297,6 @@ class LargeWarehouse:
                     box = LargeBox(rhs=next_robot_pos)
                     if box.is_moveable(move, self.array):
                         self.array = box.move_recursive(move, grid=self.array)
-                        if move in ("^", "v"):
-                            self.array.set(box.lhs, ".")
                         self.array.set(self.robot_position, ".")
                         self.array.set(next_robot_pos, "@")
                         self.robot_position = next_robot_pos
@@ -320,6 +304,3 @@ class LargeWarehouse:
     def score_gps(self) -> int:
         self.apply_moves()
         return sum(self.score_location(loc) for loc in self.array.find("["))
-
-    def score_location(self, position: GridLocation) -> int:
-        return 100 * position.pos_0 + position.pos_1
