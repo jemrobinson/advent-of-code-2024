@@ -9,4 +9,7 @@ def test_part_one():
 
 
 def test_part_two():
-    pass
+    maze_0 = ReindeerMaze("day-16.test-0.txt")
+    assert maze_0.best_seats() == 45
+    maze_0 = ReindeerMaze("day-16.test-1.txt")
+    assert maze_0.best_seats() == 64

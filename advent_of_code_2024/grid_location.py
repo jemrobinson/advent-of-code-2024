@@ -95,10 +95,10 @@ class GridVectorNorth(GridVector):
     def __init__(self) -> None:
         super().__init__((-1, 0))
 
-    def clockwise_90(self) -> "GridVectorEast":
+    def clockwise_90(self) -> "GridVector":
         return GridVectorEast()
 
-    def anticlockwise_90(self) -> "GridVectorWest":
+    def anticlockwise_90(self) -> "GridVector":
         return GridVectorWest()
 
 
@@ -106,10 +106,10 @@ class GridVectorEast(GridVector):
     def __init__(self) -> None:
         super().__init__((0, 1))
 
-    def clockwise_90(self) -> "GridVectorSouth":
+    def clockwise_90(self) -> "GridVector":
         return GridVectorSouth()
 
-    def anticlockwise_90(self) -> "GridVectorNorth":
+    def anticlockwise_90(self) -> "GridVector":
         return GridVectorNorth()
 
 
@@ -117,10 +117,10 @@ class GridVectorSouth(GridVector):
     def __init__(self) -> None:
         super().__init__((1, 0))
 
-    def clockwise_90(self) -> "GridVectorWest":
+    def clockwise_90(self) -> "GridVector":
         return GridVectorWest()
 
-    def anticlockwise_90(self) -> "GridVectorEast":
+    def anticlockwise_90(self) -> "GridVector":
         return GridVectorEast()
 
 
@@ -128,10 +128,10 @@ class GridVectorWest(GridVector):
     def __init__(self) -> None:
         super().__init__((0, -1))
 
-    def clockwise_90(self) -> "GridVectorNorth":
+    def clockwise_90(self) -> "GridVector":
         return GridVectorNorth()
 
-    def anticlockwise_90(self) -> "GridVectorSouth":
+    def anticlockwise_90(self) -> "GridVector":
         return GridVectorSouth()
 
 

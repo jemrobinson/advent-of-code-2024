@@ -1,4 +1,5 @@
 import heapq
+from collections.abc import Iterable
 from typing import Any
 
 
@@ -63,3 +64,6 @@ class Graph:
 
         # Return the distances to each node
         return distances
+
+    def nodes(self) -> Iterable[Node]:
+        return self.graph.keys()
