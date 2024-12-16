@@ -2,20 +2,20 @@ import copy
 
 import numpy as np
 
-from advent_of_code_2024.array import StrArray2D
 from advent_of_code_2024.data_loaders import (
     load_file_as_array,
     load_file_as_lines,
     load_file_as_string,
 )
 from advent_of_code_2024.grid_location import GridLocation
+from advent_of_code_2024.matrix import StrMatrix
 
 
 class Warehouse:
     def __init__(self, moves_file: str, warehouse_file: str) -> None:
-        self.array = StrArray2D(load_file_as_array(warehouse_file))
+        self.matrix = StrMatrix(load_file_as_array(warehouse_file))
         self.robot_moves = load_file_as_string(moves_file)
-        self.robot_position = self.array.find("@")[0]
+        self.robot_position = self.matrix.find("@")[0]
 
     @staticmethod
     def move(position: GridLocation, direction: str) -> GridLocation:
@@ -32,21 +32,21 @@ class Warehouse:
     def apply_moves(self) -> None:
         for move in self.robot_moves:
             next_robot_pos = self.move(self.robot_position, move)
-            match self.array.get(next_robot_pos):
+            match self.matrix.get(next_robot_pos):
                 # Wall
                 case "#":
                     continue
                 # Empty space
                 case ".":
-                    self.array.set(self.robot_position, ".")
-                    self.array.set(next_robot_pos, "@")
+                    self.matrix.set(self.robot_position, ".")
+                    self.matrix.set(next_robot_pos, "@")
                     self.robot_position = next_robot_pos
                 # Box
                 case "O":
                     next_check_pos = self.move(next_robot_pos, move)
                     moveable = False
                     while True:
-                        match self.array.get(next_check_pos):
+                        match self.matrix.get(next_check_pos):
                             # Wall
                             case "#":
                                 break
@@ -58,14 +58,14 @@ class Warehouse:
                                 moveable = True
                                 break
                     if moveable:
-                        self.array.set(self.robot_position, ".")
-                        self.array.set(next_robot_pos, "@")
-                        self.array.set(next_check_pos, "O")
+                        self.matrix.set(self.robot_position, ".")
+                        self.matrix.set(next_robot_pos, "@")
+                        self.matrix.set(next_check_pos, "O")
                         self.robot_position = next_robot_pos
 
     def score_gps(self) -> int:
         self.apply_moves()
-        return sum(self.score_location(loc) for loc in self.array.find("O"))
+        return sum(self.score_location(loc) for loc in self.matrix.find("O"))
 
     def score_location(self, position: GridLocation) -> int:
         return 100 * position.pos_0 + position.pos_1
@@ -82,7 +82,7 @@ class LargeBox:
             self.rhs = rhs
             self.lhs = rhs.west()
 
-    def is_moveable(self, direction: str, grid: StrArray2D) -> bool:  # noqa: PLR0911
+    def is_moveable(self, direction: str, grid: StrMatrix) -> bool:  # noqa: PLR0911
         if direction == "^":
             # LHS
             lhs_north = self.lhs.north()
@@ -158,7 +158,7 @@ class LargeBox:
         # Default case should be unreachable
         return False
 
-    def move_recursive(self, direction: str, grid: StrArray2D) -> StrArray2D:
+    def move_recursive(self, direction: str, grid: StrMatrix) -> StrMatrix:
         output_grid = copy.deepcopy(grid)
         if direction == "^":
             lhs_north = self.lhs.north()
@@ -253,7 +253,7 @@ class LargeBox:
 class LargeWarehouse(Warehouse):
     def __init__(self, moves_file: str, warehouse_file: str) -> None:
         super().__init__(moves_file, warehouse_file)
-        self.array = StrArray2D(
+        self.matrix = StrMatrix(
             np.array(
                 [
                     list(
@@ -267,40 +267,40 @@ class LargeWarehouse(Warehouse):
                 ]
             )
         )
-        self.robot_position = self.array.find("@")[0]
+        self.robot_position = self.matrix.find("@")[0]
 
     def apply_moves(self) -> None:
         for move in self.robot_moves:
-            if len(self.array.find("[")) != len(self.array.find("]")):
+            if len(self.matrix.find("[")) != len(self.matrix.find("]")):
                 msg = "Invalid array"
                 raise ValueError(msg)
             next_robot_pos = self.move(self.robot_position, move)
-            match self.array.get(next_robot_pos):
+            match self.matrix.get(next_robot_pos):
                 # Wall
                 case "#":
                     continue
                 # Empty space
                 case ".":
-                    self.array.set(self.robot_position, ".")
-                    self.array.set(next_robot_pos, "@")
+                    self.matrix.set(self.robot_position, ".")
+                    self.matrix.set(next_robot_pos, "@")
                     self.robot_position = next_robot_pos
                 # Box LHS
                 case "[":
                     box = LargeBox(lhs=next_robot_pos)
-                    if box.is_moveable(move, self.array):
-                        self.array = box.move_recursive(move, grid=self.array)
-                        self.array.set(self.robot_position, ".")
-                        self.array.set(next_robot_pos, "@")
+                    if box.is_moveable(move, self.matrix):
+                        self.matrix = box.move_recursive(move, grid=self.matrix)
+                        self.matrix.set(self.robot_position, ".")
+                        self.matrix.set(next_robot_pos, "@")
                         self.robot_position = next_robot_pos
                 # Box RHS
                 case "]":
                     box = LargeBox(rhs=next_robot_pos)
-                    if box.is_moveable(move, self.array):
-                        self.array = box.move_recursive(move, grid=self.array)
-                        self.array.set(self.robot_position, ".")
-                        self.array.set(next_robot_pos, "@")
+                    if box.is_moveable(move, self.matrix):
+                        self.matrix = box.move_recursive(move, grid=self.matrix)
+                        self.matrix.set(self.robot_position, ".")
+                        self.matrix.set(next_robot_pos, "@")
                         self.robot_position = next_robot_pos
 
     def score_gps(self) -> int:
         self.apply_moves()
-        return sum(self.score_location(loc) for loc in self.array.find("["))
+        return sum(self.score_location(loc) for loc in self.matrix.find("["))

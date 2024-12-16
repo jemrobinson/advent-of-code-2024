@@ -1,6 +1,5 @@
 from typing import cast
 
-from advent_of_code_2024.array import StrArray2D
 from advent_of_code_2024.data_loaders import load_file_as_array
 from advent_of_code_2024.graph import Graph, Node
 from advent_of_code_2024.grid_location import (
@@ -8,6 +7,7 @@ from advent_of_code_2024.grid_location import (
     GridVector,
     grid_vectors,
 )
+from advent_of_code_2024.matrix import StrMatrix
 
 
 class MazeNode(Node):
@@ -54,7 +54,7 @@ class MazeNode(Node):
 
 class ReindeerMaze:
     def __init__(self, filename: str) -> None:
-        self.array = StrArray2D(load_file_as_array(filename))
+        self.array = StrMatrix(load_file_as_array(filename))
         self.directions = grid_vectors.values()
         self.start = self.array.find("S")[0]
         self.start_node = MazeNode(self.start, grid_vectors["east"])

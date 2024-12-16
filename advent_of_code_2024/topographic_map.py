@@ -1,27 +1,20 @@
 from functools import reduce
 from operator import iadd
 
-import numpy as np
-
 from advent_of_code_2024.data_loaders import load_file_as_array
 from advent_of_code_2024.grid_location import GridLocation
+from advent_of_code_2024.matrix import IntMatrix
 
 
 class TopographicMap:
     def __init__(self, filename: str, max_height: int = 9) -> None:
-        self.array = load_file_as_array(filename).astype(int)
+        self.matrix = IntMatrix(load_file_as_array(filename).astype(int))
         self.directions = [GridLocation(t) for t in ((1, 0), (0, 1), (-1, 0), (0, -1))]
-        self.max_0 = self.array.shape[0] - 1
-        self.max_1 = self.array.shape[1] - 1
         self.max_height = max_height
 
     def find_trailheads(self) -> list[GridLocation]:
         """Find all trailheads"""
-        return [
-            GridLocation(position)
-            for position in np.ndindex(self.array.shape)
-            if self.array[position] == 0
-        ]
+        return self.matrix.find(0)
 
     def rate_trailhead(self, trailhead: GridLocation) -> int:
         """Get the rating for a trailhead"""
@@ -46,21 +39,17 @@ class TopographicMap:
     def unique_routes_summits(self, trailhead: GridLocation) -> list[GridLocation]:
         """Get the full list of summits at the end of a unique route"""
         positions = [trailhead]
-        while self.value(positions[0]) < self.max_height:
+        while self.matrix.get(positions[0]) < self.max_height:
             valid_moves = [self.valid_moves(position) for position in positions]
             positions = reduce(iadd, valid_moves, [])
         return positions
 
-    def value(self, position: GridLocation) -> int:
-        """Get the height of a location"""
-        return int(self.array[position.as_tuple()])
-
     def valid_moves(self, start: GridLocation) -> list[GridLocation]:
         """Look for all valid moves moving upwards from start"""
-        candidates = [
-            c
-            for c in [start + direction for direction in self.directions]
-            if c.in_bounds(self.max_0, self.max_1)
+        target_value = self.matrix.get(start) + 1
+        return [
+            candidate
+            for candidate in [start + direction for direction in self.directions]
+            if candidate.in_bounds(*self.matrix.bounds())
+            and self.matrix.get(candidate) == target_value
         ]
-        target_value = self.value(start) + 1
-        return [c for c in candidates if self.array[c.as_tuple()] == target_value]
