@@ -7,8 +7,6 @@ from advent_of_code_2024.array import StrArray2D
 from advent_of_code_2024.data_loaders import load_file_as_array
 from advent_of_code_2024.grid_location import GridLocation
 
-Position = tuple[int, int]
-
 
 class Direction(enum.IntEnum):
     NORTH = 0
@@ -18,23 +16,23 @@ class Direction(enum.IntEnum):
 
 
 class Guard:
-    def __init__(self, position: Position, direction: Direction) -> None:
+    def __init__(self, position: GridLocation, direction: Direction) -> None:
         self.position = position
         self.direction = direction
 
-    def next_position(self) -> Position:
-        pos_0, pos_1 = self.position
+    def next_position(self) -> GridLocation:
+        pos_0, pos_1 = self.position.as_tuple()
         if self.direction == Direction.NORTH:
-            return (pos_0 - 1, pos_1)
+            return GridLocation((pos_0 - 1, pos_1))
         if self.direction == Direction.EAST:
-            return (pos_0, pos_1 + 1)
+            return GridLocation((pos_0, pos_1 + 1))
         if self.direction == Direction.SOUTH:
-            return (pos_0 + 1, pos_1)
+            return GridLocation((pos_0 + 1, pos_1))
         if self.direction == Direction.WEST:
-            return (pos_0, pos_1 - 1)
+            return GridLocation((pos_0, pos_1 - 1))
 
     @property
-    def state(self) -> tuple[Position, Direction]:
+    def state(self) -> tuple[GridLocation, Direction]:
         return (self.position, self.direction)
 
     def turn(self) -> None:
@@ -44,8 +42,12 @@ class Guard:
 class LabMaze:
     def __init__(self, filename: str) -> None:
         self.array = StrArray2D(load_file_as_array(filename))
-        self.guard = Guard(self.array.find("^")[0].as_tuple(), Direction.NORTH)
-        self.visited: set[tuple[Position, Direction]] = set()
+        self.bounds = (
+            int(self.array.array.shape[0] - 1),
+            int(self.array.array.shape[1] - 1),
+        )
+        self.guard = Guard(self.array.find("^")[0], Direction.NORTH)
+        self.visited: set[tuple[GridLocation, Direction]] = set()
 
     def step(self) -> bool:
         """Take a step and return whether the guard has left the map."""
@@ -56,16 +58,13 @@ class LabMaze:
         self.visited.add(self.guard.state)
         # If the next position is invalid we are leaving the map
         next_position = self.guard.next_position()
-        if not (
-            (0 <= next_position[0] < self.array.array.shape[0])
-            and (0 <= next_position[1] < self.array.array.shape[1])
-        ):
+        if not next_position.in_bounds(*self.bounds):
             return True
         # Otherwise update the map
-        match self.array.get(GridLocation(next_position)):
+        match self.array.get(next_position):
             case "." | "x":
-                self.array.set(GridLocation(self.guard.position), "x")
-                self.array.set(GridLocation(next_position), "@")
+                self.array.set(self.guard.position, "x")
+                self.array.set(next_position, "@")
                 self.guard.position = next_position
             case "#":
                 self.guard.turn()
