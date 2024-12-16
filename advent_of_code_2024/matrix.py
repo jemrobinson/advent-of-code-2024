@@ -6,7 +6,7 @@ import numpy as np
 from advent_of_code_2024.grid_location import GridLocation
 
 
-class Array2D:
+class Matrix:
     def __init__(self, array: np.ndarray) -> None:  # type: ignore[type-arg]
         self.array = array
 
@@ -25,6 +25,9 @@ class Array2D:
         for location in np.ndindex(self.array.shape):
             yield GridLocation(location)
 
+    def bounds(self) -> tuple[int, int]:
+        return (int(self.array.shape[0] - 1), int(self.array.shape[1] - 1))
+
     def __str__(self) -> str:
         output = ""
         for iy in range(self.array.shape[0]):
@@ -35,7 +38,7 @@ class Array2D:
         return output
 
 
-class IntArray2D(Array2D):
+class IntMatrix(Matrix):
     def get(self, location: GridLocation) -> int:
         return int(self.array[location.as_tuple()])
 
@@ -43,7 +46,7 @@ class IntArray2D(Array2D):
         self.array[location.as_tuple()] = value
 
 
-class StrArray2D(Array2D):
+class StrMatrix(Matrix):
     def get(self, location: GridLocation) -> str:
         return str(self.array[location.as_tuple()])
 

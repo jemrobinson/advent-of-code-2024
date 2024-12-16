@@ -40,14 +40,10 @@ class WordSearchSimple:
         diags_swne = sum(count(pattern, diag_swne) for diag_swne in self.diags_swne)
         diags_swne_r = sum(count(pattern_r, diag_swne) for diag_swne in self.diags_swne)
         return (
-            rows
-            + rows_r
-            + columns
-            + columns_r
-            + diags_nwse
-            + diags_nwse_r
-            + diags_swne
-            + diags_swne_r
+            (rows + rows_r)
+            + (columns + columns_r)
+            + (diags_nwse + diags_nwse_r)
+            + (diags_swne + diags_swne_r)
         )
 
 
