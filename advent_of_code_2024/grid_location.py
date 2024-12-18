@@ -11,7 +11,7 @@ class GridLocation:
     - Increasing pos_1 moves east
     """
 
-    def __init__(self, location: Sequence[int]) -> None:
+    def __init__(self, location: Sequence[float | int | str]) -> None:
         self.pos_0 = int(location[0])
         self.pos_1 = int(location[1])
 
