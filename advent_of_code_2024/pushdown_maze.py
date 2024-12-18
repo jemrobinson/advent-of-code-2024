@@ -1,3 +1,4 @@
+from bisect import bisect_left
 from typing import cast
 
 from advent_of_code_2024.data_loaders import load_file_as_lines
@@ -54,6 +55,24 @@ class PushdownMaze:
                         graph.add_edge(node, neighbour, 1)
         return graph
 
+    def first_blocked_path(self) -> tuple[int, int]:
+        max_n_blocks = len(self.blocks)
+        return self.blocks[
+            bisect_left(
+                range(max_n_blocks),
+                True,  # noqa: FBT003
+                key=lambda n_blocks: self.path_blocked(n_blocks),
+            )
+            - 1
+        ].as_tuple()
+
+    def path_blocked(self, n_blocks: int) -> bool:
+        try:
+            self.shortest_path(n_blocks)
+            return False
+        except OverflowError:
+            return True
+
     def shortest_path(self, n_blocks: int) -> int:
         graph = self.build_graph(n_blocks)
-        return int(graph.dijkstra(self.start_node)[self.end_node])
+        return int(graph.dijkstra(self.start_node).get(self.end_node, float("inf")))
