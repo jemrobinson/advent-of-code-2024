@@ -1,4 +1,5 @@
 import heapq
+from collections import deque
 from collections.abc import Iterable
 from typing import Any
 
@@ -8,6 +9,9 @@ class Node:
         self.value = value
 
     def key(self) -> Any:
+        raise NotImplementedError
+
+    def heuristic(self, other: object) -> float:
         raise NotImplementedError
 
     def __eq__(self, other: object) -> bool:
@@ -28,11 +32,68 @@ class Graph:
     def __init__(self) -> None:
         self.graph: dict[Node, dict[Node, float]] = {}
 
+    @property
+    def nodes(self) -> Iterable[Node]:
+        return self.graph.keys()
+
     def add_edge(self, source: Node, target: Node, distance: float) -> None:
         if source not in self.graph:
             self.graph[source] = {}
-        # print(f"Adding edge from {str(source)} to {str(target)} with cost {distance}")
         self.graph[source][target] = distance
+
+    def a_star(self, start: Node, target: Node) -> tuple[list[Node], float]:
+        """Implement the A* algorithm"""
+        # Initialise the queue of nodes to visit
+        # Priority is distance-from-start + estimated-distance-to-target
+        queue = [(0, start)]
+        heapq.heapify(queue)
+
+        came_from: dict[Node, Node] = {start: start}
+        distances: dict[Node, float] = {start: 0}
+
+        while queue:
+            _, current = heapq.heappop(queue)
+            if current == target:
+                break
+
+            for node, distance in self.graph[current].items():
+                candidate_distance = distances[current] + distance
+                if node not in distances or candidate_distance < distances[node]:
+                    distances[node] = candidate_distance
+                    priority = candidate_distance + target.heuristic(node)
+                    heapq.heappush(queue, (priority, node))  # type: ignore[misc]
+                    came_from[node] = current
+
+        # Reconstruct the path
+        path: list[Node] = []
+        if target in came_from:
+            current = target
+            while current and current != start:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+
+        return (path, distances.get(target, float("inf")))
+
+    def bfs(self, start: Node) -> set[Node]:
+        """Implement breadth-first search (no queue priority)"""
+        # Initialise the queue of nodes to visit
+        queue = deque([start])
+
+        # Initialise the set of visited nodes
+        visited = set()
+
+        # Iterate until the queue is exhausted
+        while queue:
+            current_node = queue.popleft()
+            if current_node in visited:
+                continue
+            visited.add(current_node)
+            queue += list(self.graph[current_node].keys())
+
+        # Return set of accessible nodes
+        return visited
 
     def dijkstra(self, start: Node) -> dict[Node, float]:
         """Implement Dijkstra's algorithm"""
@@ -64,6 +125,3 @@ class Graph:
 
         # Return the distances to each node
         return distances
-
-    def nodes(self) -> Iterable[Node]:
-        return self.graph.keys()

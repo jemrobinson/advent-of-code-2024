@@ -73,8 +73,9 @@ class ReindeerMaze:
             self.graph.dijkstra(end_node) for end_node in self.end_nodes
         ]
         # Get shortest distance from any end-state node
-        # N.B. because distances_from_any_end_state_node started at the end location, we have to reverse the direction
-        nodes = [cast(MazeNode, node) for node in self.graph.nodes()]
+        # N.B. because distances_from_any_end_state_node started at the end location,
+        # we have to reverse the direction
+        nodes = [cast(MazeNode, node) for node in self.graph.nodes]
         distances_from_end = {
             node.reverse(): min(
                 end_dict[node] for end_dict in distances_from_any_end_state_node

@@ -67,12 +67,10 @@ class PushdownMaze:
         ].as_tuple()
 
     def path_blocked(self, n_blocks: int) -> bool:
-        try:
-            self.shortest_path(n_blocks)
-            return False
-        except OverflowError:
-            return True
+        graph = self.build_graph(n_blocks)
+        return self.end_node not in graph.bfs(self.start_node)
 
     def shortest_path(self, n_blocks: int) -> int:
+        # Note that int("inf") will cause an OverflowError
         graph = self.build_graph(n_blocks)
         return int(graph.dijkstra(self.start_node).get(self.end_node, float("inf")))
