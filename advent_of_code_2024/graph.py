@@ -1,4 +1,5 @@
 import heapq
+from collections import deque
 from collections.abc import Iterable
 from typing import Any
 
@@ -28,11 +29,33 @@ class Graph:
     def __init__(self) -> None:
         self.graph: dict[Node, dict[Node, float]] = {}
 
+    @property
+    def nodes(self) -> Iterable[Node]:
+        return self.graph.keys()
+
     def add_edge(self, source: Node, target: Node, distance: float) -> None:
         if source not in self.graph:
             self.graph[source] = {}
-        # print(f"Adding edge from {str(source)} to {str(target)} with cost {distance}")
         self.graph[source][target] = distance
+
+    def bfs(self, start: Node) -> set[Node]:
+        """Implement breadth-first search (no queue priority)"""
+        # Initialise the queue of nodes to visit
+        queue = deque([start])
+
+        # Initialise the set of visited nodes
+        visited = set()
+
+        # Iterate until the queue is exhausted
+        while queue:
+            current_node = queue.popleft()
+            if current_node in visited:
+                continue
+            visited.add(current_node)
+            queue += list(self.graph[current_node].keys())
+
+        # Return set of accessible nodes
+        return visited
 
     def dijkstra(self, start: Node) -> dict[Node, float]:
         """Implement Dijkstra's algorithm"""
@@ -64,6 +87,3 @@ class Graph:
 
         # Return the distances to each node
         return distances
-
-    def nodes(self) -> Iterable[Node]:
-        return self.graph.keys()
