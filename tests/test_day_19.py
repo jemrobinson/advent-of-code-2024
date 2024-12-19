@@ -7,4 +7,5 @@ def test_part_one():
 
 
 def test_part_two():
-    pass
+    towels = Towels("day-19-patterns.test.txt", "day-19-designs.test.txt")
+    assert towels.count_combinations() == 16

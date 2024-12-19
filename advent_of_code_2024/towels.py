@@ -10,14 +10,18 @@ class Towels:
         ]
         self.designs = [d.strip() for d in load_file_as_lines(designs_file)]
 
+    def count_combinations(self) -> int:
+        return sum(self.combinations(design) for design in self.designs)
+
     def count_possible(self) -> int:
-        return sum(self.is_possible(design) for design in self.designs)
+        return sum(self.combinations(design) > 0 for design in self.designs)
 
     @lru_cache(None)  # noqa: B019
-    def is_possible(self, design: str) -> bool:
+    def combinations(self, design: str) -> int:
         if design == "":
-            return True
-        for pattern in self.patterns:
-            if design.startswith(pattern) and self.is_possible(design[len(pattern) :]):
-                return True
-        return False
+            return 1
+        return sum(
+            self.combinations(design[len(pattern) :])
+            for pattern in self.patterns
+            if design.startswith(pattern)
+        )

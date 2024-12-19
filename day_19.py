@@ -10,7 +10,9 @@ def part_one():
 
 
 def part_two():
-    pass
+    start = time.monotonic()
+    towels = Towels("day-19-patterns.txt", "day-19-designs.txt")
+    print("Day 19 part 2:", towels.count_combinations(), f"in {time.monotonic() - start:.3f} seconds")
 
 if __name__ == "__main__":
     part_one()
