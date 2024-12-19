@@ -11,6 +11,9 @@ class Node:
     def key(self) -> Any:
         raise NotImplementedError
 
+    def heuristic(self, other: object) -> float:
+        raise NotImplementedError
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Node):
             return False
@@ -37,6 +40,41 @@ class Graph:
         if source not in self.graph:
             self.graph[source] = {}
         self.graph[source][target] = distance
+
+    def a_star(self, start: Node, target: Node) -> tuple[list[Node], float]:
+        """Implement the A* algorithm"""
+        # Initialise the queue of nodes to visit
+        # Priority is distance-from-start + estimated-distance-to-target
+        queue = [(0, start)]
+        heapq.heapify(queue)
+
+        came_from: dict[Node, Node] = {start: start}
+        distances: dict[Node, float] = {start: 0}
+
+        while queue:
+            _, current = heapq.heappop(queue)
+            if current == target:
+                break
+
+            for node, distance in self.graph[current].items():
+                candidate_distance = distances[current] + distance
+                if node not in distances or candidate_distance < distances[node]:
+                    distances[node] = candidate_distance
+                    priority = candidate_distance + target.heuristic(node)
+                    heapq.heappush(queue, (priority, node))  # type: ignore[misc]
+                    came_from[node] = current
+
+        # Reconstruct the path
+        path: list[Node] = []
+        if target in came_from:
+            current = target
+            while current and current != start:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+
+        return (path, distances.get(target, float("inf")))
 
     def bfs(self, start: Node) -> set[Node]:
         """Implement breadth-first search (no queue priority)"""
