@@ -54,18 +54,18 @@ class RaceConditionMaze:
                     graph.add_edge(node, neighbour, 1)
         return graph
 
-    def n_cheats(self, minimum_time_saved: int) -> int:
-        distances = self.node_distances()
+    def n_cheats(self, n_picoseconds_disabled: int, minimum_time_saved: int) -> int:
+        distances = self.finite_node_distances()
         n_cheats = 0
         for node_1, d_from_start_1 in distances.items():
             for node_2, d_from_start_2 in distances.items():
                 d_nodes = node_1.manhattan(node_2)
-                if d_nodes == 2:  # noqa: PLR2004
+                if d_nodes <= n_picoseconds_disabled:
                     if d_from_start_2 - d_from_start_1 - d_nodes >= minimum_time_saved:
                         n_cheats += 1
         return n_cheats
 
-    def node_distances(self) -> dict[RaceConditionNode, int]:
+    def finite_node_distances(self) -> dict[RaceConditionNode, int]:
         return {
             cast(RaceConditionNode, k): int(v)
             for k, v in self.graph.dijkstra(self.start_node).items()
