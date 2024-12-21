@@ -1,7 +1,6 @@
 from collections import defaultdict
-from functools import reduce
+from functools import lru_cache
 from itertools import pairwise, product
-from operator import iadd
 
 from advent_of_code_2024.data_loaders import load_file_as_lines
 from advent_of_code_2024.graph import Node
@@ -71,50 +70,45 @@ class Keypad:
             for target, paths in dest_dict.items()
         }
 
-    def instructions(self, route: str) -> list[str]:
-        instruction_sets = [""]
-        for c_from, c_to in pairwise(self.initial_state + route):
-            steps = self.shortest_paths[(c_from, c_to)]
-            instruction_sets = [
-                path + step for path in instruction_sets for step in steps
-            ]
-        return instruction_sets
-
 
 class DirectionalKeypad(Keypad):
-    def __init__(self, initial_state: str) -> None:
-        super().__init__(initial_state=initial_state, lines=[".^A", "<v>"])
+    def __init__(self) -> None:
+        super().__init__(initial_state="A", lines=[".^A", "<v>"])
 
 
 class NumericKeypad(Keypad):
-    def __init__(self, initial_state: str) -> None:
-        super().__init__(
-            initial_state=initial_state, lines=["789", "456", "123", ".0A"]
-        )
+    def __init__(self) -> None:
+        super().__init__(initial_state="A", lines=["789", "456", "123", ".0A"])
 
 
 class KeypadSolver:
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: str, num_directional: int) -> None:
         self.codes = [line.strip() for line in load_file_as_lines(filename)]
-        self.keypads: list[Keypad] = [
-            NumericKeypad("A"),
-            DirectionalKeypad("A"),
-            DirectionalKeypad("A"),
-        ]
+        self.keypads: list[Keypad] = [NumericKeypad()]
+        for _ in range(num_directional):
+            self.keypads.append(DirectionalKeypad())
 
-    def button_presses(self, code: str) -> list[str]:
-        key_presses = [code]
-        for keypad in self.keypads:
-            key_presses = reduce(
-                iadd, [keypad.instructions(target) for target in key_presses]
-            )
-            min_length = min(len(kp) for kp in key_presses)
-            key_presses = [kp for kp in key_presses if len(kp) == min_length]
-        return key_presses
+    @lru_cache(None)  # noqa: B019
+    def n_button_presses(self, code: str, depth: int = 0) -> int:
+        """Calculate minimum number of button presses recursively
+
+        If we are at the final (human-controlled) keypad then the number of presses is the length of the code
+        Otherwise, for each change from key-A -> key-B in the code
+        - find the shortest paths that encode this on a directional keypad
+        - for each of these paths, call this function at the next level down, to find which is the minimum
+        """
+        if depth == len(self.keypads):
+            return len(code)
+        total_presses = 0
+        for c_from, c_to in pairwise(self.keypads[depth].initial_state + code):
+            paths = self.keypads[depth].shortest_paths[(c_from, c_to)]
+            min_presses = min(self.n_button_presses(path, depth + 1) for path in paths)
+            total_presses += min_presses
+        return total_presses
 
     def complexity(self, code: str) -> int:
         numeric_part = int("".join([c for c in code if str.isdigit(c)]))
-        return len(self.button_presses(code)[0]) * numeric_part
+        return self.n_button_presses(code) * numeric_part
 
     def total_complexity(self) -> int:
         return sum(self.complexity(code) for code in self.codes)
