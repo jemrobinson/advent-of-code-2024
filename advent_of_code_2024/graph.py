@@ -11,7 +11,7 @@ class Node:
     def key(self) -> Any:
         raise NotImplementedError
 
-    def heuristic(self, other: object) -> float:
+    def heuristic(self, _: object) -> float:
         raise NotImplementedError
 
     def __eq__(self, other: object) -> bool:
