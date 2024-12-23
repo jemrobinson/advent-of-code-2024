@@ -10,7 +10,9 @@ def part_one():
 
 
 def part_two():
-    pass
+    start = time.monotonic()
+    party = LanParty("day-23.txt")
+    print("Day 23 part 2:", party.find_password(), f"in {time.monotonic() - start:.3f} seconds")
 
 if __name__ == "__main__":
     part_one()

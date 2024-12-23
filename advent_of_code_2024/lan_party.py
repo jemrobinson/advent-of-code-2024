@@ -11,6 +11,12 @@ class LanParty:
             self.graph.add_edge(Node(comp_0), Node(comp_1), 1)
             self.graph.add_edge(Node(comp_1), Node(comp_0), 1)
 
+    def find_password(self) -> str:
+        largest_cluster = max(
+            self.graph.maximal_cliques(), key=lambda clique: len(clique)
+        )
+        return ",".join(sorted([node.value for node in largest_cluster]))
+
     def find_triples(self) -> set[tuple[Node, Node, Node]]:
         triples = set()
         for node_i in self.graph.nodes:

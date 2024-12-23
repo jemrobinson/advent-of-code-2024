@@ -97,6 +97,26 @@ class Graph:
         # Return set of accessible nodes
         return visited
 
+    def bron_kerbosch(
+        self, r_nodes: set[Node], p_nodes: set[Node], x_nodes: set[Node]
+    ) -> list[set[Node]]:
+        """Implement the Bron-Kerbosch algorithm without pivot"""
+        output = []
+        if not p_nodes and not x_nodes:
+            return [r_nodes]
+        for node in list(p_nodes):
+            neighbours = self.neighbours(node)
+            output.extend(
+                self.bron_kerbosch(
+                    r_nodes.union({node}),
+                    p_nodes.intersection(neighbours),
+                    x_nodes.intersection(neighbours),
+                )
+            )
+            p_nodes.remove(node)
+            x_nodes.add(node)
+        return output
+
     def dijkstra(self, start: Node) -> dict[Node, float]:
         """Implement Dijkstra's algorithm"""
         distances = {node: float("inf") for node in self.graph}
@@ -128,5 +148,9 @@ class Graph:
         # Return the distances to each node
         return distances
 
-    def neighbours(self, node: Node) -> list[Node]:
-        return list(self.graph[node].keys())
+    def maximal_cliques(self) -> list[set[Node]]:
+        """Use Bron-Kerbosch to return all maximal cliques"""
+        return self.bron_kerbosch(set(), set(self.nodes), set())
+
+    def neighbours(self, node: Node) -> set[Node]:
+        return set(self.graph[node].keys())
