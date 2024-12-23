@@ -9,7 +9,7 @@ class Node:
         self.value = value
 
     def key(self) -> Any:
-        raise NotImplementedError
+        return self.value
 
     def heuristic(self, _: object) -> float:
         raise NotImplementedError
@@ -24,8 +24,10 @@ class Node:
     def __hash__(self) -> int:
         return hash(self.key())
 
-    def __lt__(self, _: object) -> bool:
-        raise NotImplementedError
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Node):
+            raise NotImplementedError
+        return bool(self.value < other.value)
 
 
 class Graph:
@@ -125,3 +127,6 @@ class Graph:
 
         # Return the distances to each node
         return distances
+
+    def neighbours(self, node: Node) -> list[Node]:
+        return list(self.graph[node].keys())
