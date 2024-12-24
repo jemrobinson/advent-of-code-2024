@@ -15,6 +15,13 @@ def load_file_as_array(filename: str) -> npt.NDArray[np.str_]:
     return np.array([list(line.strip()) for line in lines])
 
 
+def load_file_as_blocks(filename: str) -> list[str]:
+    input_path = pathlib.Path("data") / filename
+    with open(input_path) as f_input:
+        data = f_input.read()
+    return data.split("\n\n")
+
+
 def load_file_as_lines(filename: str) -> list[str]:
     input_path = pathlib.Path("data") / filename
     with open(input_path) as f_input:
