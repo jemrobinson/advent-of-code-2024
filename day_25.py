@@ -9,10 +9,5 @@ def part_one():
     print("Day 25 part 1:", matcher.unique_pairs(), f"in {time.monotonic() - start:.3f} seconds")
 
 
-def part_two():
-    pass
-
-
 if __name__ == "__main__":
     part_one()
-    part_two()
