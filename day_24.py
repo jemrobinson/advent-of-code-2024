@@ -1,6 +1,5 @@
 import time
 
-from advent_of_code_2024.lan_party import LanParty
 from advent_of_code_2024.logic_gates import Computer
 
 
